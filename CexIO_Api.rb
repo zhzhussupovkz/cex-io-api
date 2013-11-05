@@ -53,11 +53,11 @@ class CexIO_Api
 
   #send private request to the server
   def private_request method, params = {}
-    nonce = Time.now.to_i
+    nonce = Time.now.to_i.to_s
     message = nonce.to_s + @username + @api_key
     sha256 = OpenSSL::Digest::SHA256.new
     hash = OpenSSL::HMAC.digest(sha256, @secret, message)
-    signature = Base64.encode64(hash)
+    signature = Base64.encode64(hash).chomp.gsub( /\n/, '' )
     required = { 'key' => @api_key, 'nonce' => nonce, 'signature' => signature }
     params = required.merge(params)
     uri = URI.parse(@api_url + method)
